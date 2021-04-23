@@ -9,7 +9,7 @@ type Card struct{
 	Type string
 	Brand string
 	Address string
-	Number string
+	Card_number string
 	Holder_name string
 	Expiration_year string
 	Expiration_month string
@@ -150,7 +150,7 @@ type Bank_account_rfc struct{
 type Address_client struct{
 	Line1 string
 	Line2 string
-	Line3 string
+	Line3 string	json:"line3,omitempty"
 	Postal_code string
 	State string
 	City string
@@ -162,6 +162,58 @@ type Store_client struct{
 	Reference string
 	Barcode_url string
 }
+
+//Tarjeta con dirección en formato direccion cliente para objeto
+type Card_token_obj struct{
+	Card_number string
+	Holder_name string
+	Expiration_year string
+	Expiration_month string
+	Address Address_client
+	Creation_date string
+	Brand string
+	Points_card string
+}
+
+//El mismo de arriba pero para crear token 
+type Card_token struct{
+	Card_number string
+	Holder_name string
+	Expiration_year string
+	Expiration_month string
+	Address Address_client
+	Creation_date string	json:"creation_date,omitempty"
+	Points_card string
+}
+
+//Estrucrtura geolocalización de tienda
+type Geolocation_store struct{
+	Lng float64
+	Lat float64
+	Place_id string
+}
+
+//Estructura paynet_chain
+type Paynet_chain_store struct{
+	Name string
+	Logo string //Captura la dirección URL
+	Thumb string //Captura la URL
+	Max_ammount float64
+}
+
+//Estructura cuenta de banco para transacciones
+type Bank_account_transfer struct{
+	Rfc string
+	Mobile string	json:"mobile,emoitempty"
+	Alias string 	json:"alias,omitempty"
+	Bank_name string
+	Creation_date string
+	Clabe string
+	Holder_name string
+	Bank_code string
+}	
+
+
 /////////////////////////////////////////////////////////////
 //CARGOS
 //Respuesta al cargo con id o token
@@ -767,7 +819,7 @@ type ObjSuscripcion struct{
 	Customer_id string
 }
 
-//Respuesta crea nueva suscripcion //Identica al anterior salvo por el tipo de tarjeta
+//Respuesta crea nueva suscripcion //Identica al anterior salvo por el tipo de tarjeta//misma para actualiza,obtener,el listado es un array de objetos
 type ResNuevaSus struct{ 
 	Id string
 	Status string
@@ -780,4 +832,158 @@ type ResNuevaSus struct{
 	Trial_end_date string
 	Plan_id string
 	Customer_id string
+}
+
+//////////////////////////////////////////////////////////////
+//Comisiones
+
+//Respuesta a cobro de una comision, la lista de comisiones es un arreglo de este objeto
+type ResCobroComision struct{
+	Amount float64
+	Authorization string	json:"authorization,omitempty"
+	Method string
+	Operation_type string
+	Currency string
+	Transaction_type string
+	Status string
+	Id string
+	Creation_date string
+	Description string
+	Error_message string
+	Order_id string
+	Customer_id string
+}
+
+//Respuesta Devolver comision 
+type ResDevuelveComision struct{
+	Id string
+	Authorization string	json:"authorization,omitempty"
+	Method string
+	Operation_type string
+	Transaction_type string
+	Status string
+	Conciliated string
+	Creation_date string
+	Operation_date string
+	Description string
+	Error_message string
+	Order_id string
+	Customer_id string
+	Currency string
+	Amount float64
+}
+
+//////////////////////////////////////////////////////////////
+//Webhooks
+//Objeto webhook
+type ObjWebHook struct{
+	Id string
+	Url string
+	User string
+	Password string
+	Event_Types []string
+	Status
+}
+
+//Respuesta a creación de webhook
+type ResCreaWebhook struct{
+	Id string
+	Url string
+	User string
+	Event_Types []string
+	Status string
+}
+
+//Respuesta a lista de webhooks, arreglo de objetos
+type ResListaWebhooks struct{
+	Id string
+	Event_Types []string
+	Url string
+	Status string
+}
+
+//////////////////////////////////////////////////////////////
+//TOKENS
+//Objeto token
+type ObjToken struct{
+	Id string
+	Card Card_token_obj
+}
+
+
+//Respuesta crear token, mismo que para obtener token
+type ResNuevoToken struct{
+	Id string
+	Card Card_token
+}
+
+//////////////////////////////////////////////////////////////
+//Comercio
+//Objeto comercio, es la misma que la respuesta a obtener comercio
+type ObjComercio struct{
+	Id string
+	Creation_date string
+	Name string
+	Email string
+	Phone string
+	Status string
+	Balance float64
+	Clabe string
+}
+
+//////////////////////////////////////////////////////////////
+//TIENDA
+//OBJ tienda, la lista de tiendas es un arreglo de estos objetos
+type ObjTienda struct{
+	Id_store int64
+	Id int64
+	Name string
+	Last_update string
+	Status string
+	Geolocation Geolocation_store
+	Address Address_client
+	Paynet_chain Paynet_chain_store
+}
+//////////////////////////////////////////////////////////////
+//Objetos comunes(algunos ya estaban arriba, no los repetí)
+//Obj Transaccion
+type ObjTransaccion struct {
+	Id string
+	Authorization string json:"authorization,omitempty"
+	Transaction_type string
+	Operation_type string
+	Currency string
+	Method string
+	Creation_date string
+	Order_id string
+	Status string
+	Amount float64
+	Description string
+	Error_message string	json:"error_message,omitempty"
+	Customer_id string
+	Bank_account Bank_account_transfer
+}
+
+//OBJ store
+type ObjStore struct{
+	Reference string
+	Barcode_url string
+	Paybin_reference string
+	Barcode_paybin_url string
+}
+
+//OBJ Payment plan
+type ObjPaymentPlan struct{
+	Used int64
+	Remaining int64
+	Caption string
+	Amount int64
+}
+
+//Obj card poiints //Identico al payment plan
+type ObjCardPoints struct{
+	Used int64
+	Remaining int64
+	Caption string
+	Amount int64
 }
